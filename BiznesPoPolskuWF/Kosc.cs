@@ -13,7 +13,7 @@ namespace BiznesPoPolskuWF
         public static int RzutKoscia()
         {
             CzyRzucano = true;
-            return rnd.Next(1, 3);//1-7
+            return rnd.Next(1, 7);//1-7
         }
     }
 }

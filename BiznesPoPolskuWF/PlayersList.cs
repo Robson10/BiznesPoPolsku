@@ -13,7 +13,6 @@ namespace BiznesPoPolskuWF
 
         public int RzutKostka()
         {
-            Kosc.CzyRzucano = true;
             return Kosc.RzutKoscia();
         }
         public void NastepnaTura()
@@ -33,8 +32,10 @@ namespace BiznesPoPolskuWF
             else
                 System.Windows.Forms.MessageBox.Show("Nim zakończysz turę musisz rzucić kostką");
         }
+
         public List<string> PrzejrzyjStatystyki(ref List<pole> pola, PlayerItem gracz)
         {
+            //metoda Nr 3
             List<string> temp = new List<string>();
             temp.Add(gracz.Nazwa);
             temp.Add(gracz.Saldo.ToString());
@@ -46,25 +47,33 @@ namespace BiznesPoPolskuWF
 
         public void UtrataZawodu()
         {
+            
             AktualnyGracz.PosiadanyZawod = -1;
         }
+
         public void PobierzOplateZaStart()
         {
+            //metoda nr 7
             AktualnyGracz.Saldo += 300;
         }
-        public void OglosBankructwoGracza()
+        
+        public bool OglosBankructwoGracza()
         {
+            //metoda nr 10
             if (AktualnyGracz.Saldo < 0)
             {
                 System.Windows.Forms.MessageBox.Show("Zbankrutowałeś");
                 AktualnyGracz.PictureBox.Dispose();
                 this.Remove(AktualnyGracz);
+                return true;
+                //trzeba nazwać panele graczy ich nazwami by pozniej przy ogłoszeniu bankructwa je ukrywać
             }
-
+            return false;
         }
-
+        
         public void UstalKolejnoscGraczy()
         {
+            //metoda nr 11
             var temp = this.OrderBy(a => Guid.NewGuid()).ToList();
             this.Clear();
             this.AddRange(temp);
@@ -74,28 +83,41 @@ namespace BiznesPoPolskuWF
             }
             PrzydzielSaldo();
         }
+
         public void ZaplacInnemuGraczowi(int kara, string czyjePole)
         {
+            //metoda nr 4
             AktualnyGracz.Saldo -= kara;
             this[this.FindIndex(x => x.Nazwa.Equals(czyjePole))].Saldo+=kara;
-            OglosBankructwoGracza();
+           
         }
-        public void PrzydzielSaldo(int kwota=20000)
+
+        public void PrzydzielSaldo()
         {
+            //metoda nr 13
             for (int i = 0; i < this.Count; i++)
             {
-                this[i].Saldo = kwota;
+                this[i].Saldo = 20000;
             }
         }
+        public void Rezygnacja()
+        {
+            //metoda nr 14
+            System.Windows.Forms.MessageBox.Show("Zrezygnowałeś z gry.");
+            AktualnyGracz.PictureBox.Dispose();
+            this.Remove(AktualnyGracz);
+        }
+
         public void Inwestuj(int kwota)
         {
             AktualnyGracz.Saldo -= kwota;
         }
+  
         public void ZastosujSieDoInstrukcjiKarty(KartaItem karta)
         {
+            //metoda nr 9
             AktualnyGracz.Saldo -= karta.Kwota;
             AktualnyGracz.StoiKolejek += karta.Kolejki;
-            OglosBankructwoGracza();
         }
     }
     public class PlayerItem

@@ -8,8 +8,10 @@ namespace BiznesPoPolskuWF
 {
     public partial class Form1
     {
+        
         private void NastepnaTura()
         {
+            //metoda Nr 2
             PlayerList.NastepnaTura();
             Gracz13Info.Visible = false;
             Gracz24Info.Visible = false;
@@ -19,8 +21,10 @@ namespace BiznesPoPolskuWF
             Gracz24Info.Visible = false; 
             PrzebiegGryTB.Text = "Teraz tura gracza: " + PlayerList.AktualnyGracz.Nazwa+Environment.NewLine;
         }
+                
         private void RzutKostka()
         {
+            // metoda Nr 1
             if (!Kosc.CzyRzucano)
             {
                 int wyrzuconaWartosc = PlayerList.RzutKostka();
@@ -30,8 +34,10 @@ namespace BiznesPoPolskuWF
             else
                 PrzebiegGryTB.Text += "Już rzucałeś kostką" + Environment.NewLine;
         }
+                
         private void PrzesunNaPole(int value)
         {
+            //metoda nr 5
             Pola[PlayerList.AktualnyGracz.Pozycja].Pole.Controls.Remove(PlayerList.AktualnyGracz.PictureBox);
             PlayerList.AktualnyGracz.Pozycja += value;
             if (PlayerList.AktualnyGracz.Pozycja > 39)
@@ -43,7 +49,7 @@ namespace BiznesPoPolskuWF
 
             if (Pola[PlayerList.AktualnyGracz.Pozycja].dochod > 0)
             {
-                PoleZawodu();
+                PodejmijZawod();
             }
             else if(PlayerList.AktualnyGracz.Pozycja==2 || PlayerList.AktualnyGracz.Pozycja==11)
             { PlayerList.AktualnyGracz.StoiKolejek += 1; }
@@ -90,8 +96,10 @@ namespace BiznesPoPolskuWF
                 }
             }
         }
+                
         private void Inwestuj() //Sprawdzenie w btn TAK
         {
+            //metoda nr 6
             if (Pola[PlayerList.AktualnyGracz.Pozycja].czyje == null)
             {
                 Pola[PlayerList.AktualnyGracz.Pozycja].czyje = PlayerList.AktualnyGracz.Nazwa;
@@ -105,34 +113,57 @@ namespace BiznesPoPolskuWF
             TakBT.Visible = false;
             NieBT.Visible = false;
         }
+
         private void ZaplacInnemuGraczowi()
         {
             PrzebiegGryTB.Text += "Stanąłeś na polu: " + Pola[PlayerList.AktualnyGracz.Pozycja].nazwa_pola + Environment.NewLine +
                     "Nalezy ono do gracza: " + Pola[PlayerList.AktualnyGracz.Pozycja].czyje + Environment.NewLine +
                     "Musisz zaplacić: " + Pola[PlayerList.AktualnyGracz.Pozycja].kara + Environment.NewLine;
             PlayerList.ZaplacInnemuGraczowi(Pola[PlayerList.AktualnyGracz.Pozycja].kara, Pola[PlayerList.AktualnyGracz.Pozycja].czyje);
-
+            if (PlayerList.OglosBankructwoGracza())
+            {
+                NastepnaTura();
+            }
         }
+
         Los los = new Los();
         Niespodzianka niespodzianka = new Niespodzianka();
+        
+        private void Rezygnacja()
+        {
+            //metoda nr 14
+            PlayerList.Rezygnacja();
+            NastepnaTura();
+        }
+        
         private void WybierzKarteLosuLubNiespodzianki(string wariant)
         {
-            
+            //metoda nr 8
             if (wariant.Equals("Niespodzianka"))
             {
                 int NrKarty = new Random().Next(0,niespodzianka.Count);
                 System.Windows.Forms.MessageBox.Show(niespodzianka[NrKarty].Informacja);
                 PlayerList.ZastosujSieDoInstrukcjiKarty(niespodzianka[NrKarty]);
+                if (PlayerList.OglosBankructwoGracza())
+                {
+                    NastepnaTura();
+                }
             }
             else if (wariant.Equals("Los"))
             {
                 int NrKarty = new Random().Next(0, los.Count);
                 System.Windows.Forms.MessageBox.Show(los[NrKarty].Informacja);
                 PlayerList.ZastosujSieDoInstrukcjiKarty(los[NrKarty]);
+                if (PlayerList.OglosBankructwoGracza())
+                {
+                    NastepnaTura();
+                }
             }
         }
-        public void PoleZawodu()
+
+        public void PodejmijZawod()
         {
+            //metoda nr 15
             if (Pola[PlayerList.AktualnyGracz.Pozycja].cena==0)//cena 0 to zawod -1 to np START
             {
                 if (Pola[PlayerList.AktualnyGracz.Pozycja].czyje == null)
@@ -153,6 +184,10 @@ namespace BiznesPoPolskuWF
                         "Należy ono do gracza: "+ Pola[PlayerList.AktualnyGracz.Pozycja].czyje+Environment.NewLine+
                            "Musisz zapłacić: " + Pola[PlayerList.AktualnyGracz.Pozycja].kara + Environment.NewLine;
                     PlayerList.ZaplacInnemuGraczowi(Pola[PlayerList.AktualnyGracz.Pozycja].kara, Pola[PlayerList.AktualnyGracz.Pozycja].czyje);
+                    if (PlayerList.OglosBankructwoGracza())
+                    {
+                        NastepnaTura();
+                    }
                 }
             }
         }
